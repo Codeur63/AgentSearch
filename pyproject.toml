@@ -5,10 +5,13 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "grok>=6.2",
+    "ddgs>=9.16.0",
+    "groq>=1.7.0",
     "langchain>=1.4.1",
+    "openai>=3.14.1",
     "pydantic-ai>=2.44.0",
     "python-dotenv>=1.2.3",
+    "temporalio>=1.33.0",
 ]
 
 [project.scripts]

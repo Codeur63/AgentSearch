@@ -1,0 +1,69 @@
+version: '3.8'
+
+networks:
+  temporal-network:
+    name: temporal-network
+
+services:
+  # 1. Base de données PostgreSQL pour la persistance de Temporal
+  temporal-db:
+    image: postgres:15
+    container_name: temporal-postgresql
+    environment:
+      - POSTGRES_USER=temporal
+      - POSTGRES_PASSWORD=temporal
+      - POSTGRES_DB=temporal
+    networks:
+      - temporal-network
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U temporal -d temporal"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # 2. Le Serveur Principal Temporal (Mode auto-setup)
+  temporal:
+    image: temporalio/auto-setup:1.26.2
+    container_name: temporal
+    depends_on:
+      temporal-db:
+        condition: service_healthy
+    environment:
+      - DB=postgres12
+      - DB_PORT=5432
+      - POSTGRES_USER=temporal
+      - POSTGRES_PWD=temporal
+      - POSTGRES_SEEDS=temporal-db
+      - DBNAME=temporal
+    networks:
+      - temporal-network
+    ports:
+      - '7233:7233' # Port de communication gRPC utilisé par votre code Python
+
+  # 3. L'Interface Web d'Administration (Dashboard)
+  temporal-ui:
+    image: temporalio/ui:2.26.2
+    container_name: temporal-ui
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+    networks:
+      - temporal-network
+    ports:
+      - '8080:8080' # Interface accessible sur votre navigateur
+
+  # 4. Les Outils d'Administration (CLI tctl / temporal)
+  temporal-admin-tools:
+    image: temporalio/admin-tools:1.26.2
+    container_name: temporal-admin-tools
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+    networks:
+      - temporal-network
+    stdin_open: true
+    tty: true
