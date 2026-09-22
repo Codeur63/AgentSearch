@@ -6,9 +6,18 @@ from temporalio.client import Client
 from temporalio.worker import Worker
 from agentsearch.tools.search import search_web
 from agentsearch.worklows.workflow import ContentWorkflow
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__) 
 
 async def main():
-    client = await Client.connect("localhost:7233")
+    try:
+        logger.info("Connexion au serveur Temporal")
+        client = await Client.connect("localhost:7233")
+        logger.info("Connexion reussis a Temporal ")
+    except Exception as e:
+        logger.error("Erreur inattendue est survenue")
 
     worker = Worker(
         client,
@@ -41,7 +50,10 @@ async def main():
             print(f"Agent : {resultat_search}")
             print("="*40)
     finally:
-        worker_task.cancel()
+        worker_task.cancel() 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        logger.error("Une erreur est survenue")    
