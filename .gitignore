@@ -5,6 +5,19 @@ build/
 dist/
 wheels/
 *.egg-info
+.agents/
+.claude/
+.devin/
+.next/
+.opencode/
+.cursor/
 
 # Virtual environments
 .venv
+
+# Configuration locale et données de publication
+.env
+.env.*
+!.env.example
+.agentsearch/
+.pytest_cache/

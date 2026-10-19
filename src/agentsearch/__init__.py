@@ -1,2 +1,5 @@
+"""AgentSearch : recherche documentaire avec validation humaine."""
+
 def main() -> None:
-    print("Hello from agentsearch!")
+    from agentsearch.main import cli
+    cli()

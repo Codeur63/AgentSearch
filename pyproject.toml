@@ -1,22 +1,32 @@
 [project]
 name = "agentsearch"
 version = "0.1.0"
-description = "Add your description here"
+description = "Recherche documentaire, vérification et création de publications avec validation humaine"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "ddgs>=9.16.0",
     "groq>=1.7.0",
+    "httpx>=0.28.1",
     "langchain>=1.4.1",
+    "mcp[cli]>=2.2.0",
     "openai>=3.14.1",
+    "pydantic>=2.13.5",
     "pydantic-ai>=2.44.0",
+    "pytest",
     "python-dotenv>=1.2.3",
     "temporalio>=1.33.0",
+    "trafilatura>=2.3.1",
 ]
 
 [project.scripts]
-agentsearch = "agentsearch:main"
+agentsearch = "agentsearch.interfaces.cli:cli"
 
 [build-system]
 requires = ["uv_build>=0.12.15,<0.13.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
